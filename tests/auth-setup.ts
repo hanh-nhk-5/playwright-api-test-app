@@ -1,10 +1,9 @@
-import { test as setup, request, expect} from "@playwright/test";
+import { test as setup} from "@playwright/test";
 import fs from 'fs';
-import user from '../.auth/user.json';
-import {faker} from '@faker-js/faker';
+import process from "process";
 
-setup ('authenticate', async ({request}, testInfo) => {  
-    //Login                 
+setup ('authenticate', async ({request}) => {       
+    console.log('Starting authentication setup...');          
     let apiResponse= await request.post(`${process.env.API_URL}/users/login`, {
         data: {
             "user":{
@@ -13,31 +12,13 @@ setup ('authenticate', async ({request}, testInfo) => {
             }
         }
     });
-    if(apiResponse.ok()){
+    if(apiResponse.ok()){        
+        const user = JSON.parse(fs.readFileSync(process.env.AUTHENTICATION_FILE_PATH!, 'utf8'));
         const token = (await apiResponse.json()).user.token;        
-        writeTokenToAuthFile(token);
+        user.origins[0].localStorage[0].value = token;
+        fs.writeFileSync(process.env.AUTHENTICATION_FILE_PATH!, JSON.stringify(user));        
     }
-    else{  
-        //sign up      
-        let username = `dungchungonline${faker.number.int({min: 10, max: 99999})}`;
-        process.env.MY_EMAIL= `${username}@gmail.com`   
-        console.log(`Creating new account with email: ${process.env.MY_EMAIL}`);
-        apiResponse= await request.post(`${process.env.API_URL}/users`, {        
-            data: {
-                "user":{
-                    "email": process.env.MY_EMAIL,    
-                    "password": process.env.MY_PASSWORD!,
-                    "username": username}
-            }
-        });
-        if(apiResponse.ok()){
-            const token = (await apiResponse.json()).user.token;
-            writeTokenToAuthFile(token);
-        }
+    else{
+        console.error(`Failed to authenticate: ${apiResponse.status()} ${apiResponse.statusText()} ${await apiResponse.text()}`);   
     }
 });
-
-function writeTokenToAuthFile(token: string){
-    user.origins[0].localStorage[0].value = token;
-    fs.writeFileSync(process.env.AUTHENTICATION_FILE_PATH!, JSON.stringify(user));
-}

@@ -13,55 +13,47 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './tests',
-  /* Run tests in files in parallel */
+  testDir: './tests',  
   fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
+  forbidOnly: !!process.env.CI,  
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-    /* Base URL to use in actions like `await page.goto('')`. */
+  reporter: 'html',  
+  use: {    
     baseURL: 'https://conduit.bondaracademy.com/',
-    storageState: '.auth/user.json',
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    storageState: process.env.AUTHENTICATION_FILE_PATH,
     trace: 'on-first-retry',
   },
 
   /* Configure projects for major browsers */
   projects: [
-    {name: 'authentitcate', testMatch: 'auth-setup.ts'},
+    {
+      name: 'authenticate', 
+      testMatch: 'auth-setup.ts'
+    },
     {
       name: 'chromium',
       use: { 
-        ...devices['Desktop Chrome'] ,
-        storageState: process.env.AUTHENTICATION_FILE_PATH,        
+        ...devices['Desktop Chrome'] ,        
       },
-      dependencies: ['authentitcate'],
+      dependencies: ['authenticate'],
     },
 
     {
       name: 'firefox',
       use: { 
-        ...devices['Desktop Firefox'],
-        storageState: process.env.AUTHENTICATION_FILE_PATH,        
+        ...devices['Desktop Firefox'],        
       },
-      dependencies: ['authentitcate'],
+      dependencies: ['authenticate'],
     },
 
     {
       name: 'webkit',
       use: { 
-        ...devices['Desktop Safari'],
-        storageState: process.env.AUTHENTICATION_FILE_PATH,        
+        ...devices['Desktop Safari'],        
       },
-      dependencies: ['authentitcate'],
+      dependencies: ['authenticate'],
     },
 
     /* Test against mobile viewports. */
