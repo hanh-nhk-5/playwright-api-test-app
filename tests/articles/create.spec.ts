@@ -1,6 +1,7 @@
 
-import { ArticleDetailsPage } from '../page-objects/article-details-page';
-import {test, expect} from './my-fixtures';
+import { ArticleDetailsPage } from '../../src/pages/article-details-page';
+import {test, expect} from '../../src/fixtures/my-fixtures';
+import { deleteArticleBySlug } from '../../src/apis/article.api';
 
 test.describe('Creating a new article', () =>{
     let articleSlug: string | undefined;
@@ -34,13 +35,7 @@ test.describe('Creating a new article', () =>{
             return;
         }
 
-        const response = await request.delete(`/articles/${articleSlug}`);
-        if (!response.ok()) {
-            const responseBody = await response.text();
-            console.error(`Failed to delete article with slug ${articleSlug}: ${response.status()} ${response.statusText()} ${responseBody}`);
-        }
-
-        articleSlug = undefined;
+        await deleteArticleBySlug(request, articleSlug);
     });
 });
 

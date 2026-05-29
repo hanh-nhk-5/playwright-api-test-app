@@ -1,0 +1,15 @@
+# use this template to create an user.json file in the same folder
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "https://conduit.bondaracademy.com",
+      "localStorage": [
+        {
+          "name": "jwtToken",
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjo1NDE2Mn0sImlhdCI6MTc3OTgzMjkyNCwiZXhwIjoxNzg1MDE2OTI0fQ.fjJXZkapkKM3kMZknGv32d0EH5kaj1IF4tsboW-Gov0"
+        }
+      ]
+    }
+  ]
+}

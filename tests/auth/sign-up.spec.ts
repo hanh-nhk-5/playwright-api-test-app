@@ -1,5 +1,5 @@
-import { LandingPage } from "../page-objects/landing-page";
-import { expect, test } from "./my-fixtures";
+import { LandingPage } from "../../src/pages/landing-page";
+import { expect, test } from "../../src/fixtures/my-fixtures";
 
 test.use({
     //use the isolated storage state for this test to ensure it runs without any pre-existing authentication data

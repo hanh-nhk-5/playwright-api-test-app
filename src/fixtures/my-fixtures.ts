@@ -1,10 +1,10 @@
 import {test as base, APIRequestContext} from '@playwright/test';
 import fs from 'fs';
-import {PageManager} from '../page-objects/page-manager';
-import { SignInPage } from '../page-objects/sign-in-page';
-import { LandingPage } from '../page-objects/landing-page';
-import { NewArticlePage } from '../page-objects/new-article-page';
-import { SignUpPage } from '../page-objects/sign-up-page';
+import {PageManager} from '../pages/page-manager';
+import { SignInPage } from '../pages/sign-in-page';
+import { LandingPage } from '../pages/landing-page';
+import { NewArticlePage } from '../pages/new-article-page';
+import { SignUpPage } from '../pages/sign-up-page';
 
 type MyFixtures={
     pageManager: PageManager;

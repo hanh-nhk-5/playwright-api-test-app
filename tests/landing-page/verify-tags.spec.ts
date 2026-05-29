@@ -1,4 +1,4 @@
-import {test, expect} from './my-fixtures';
+import {test, expect} from '../../src/fixtures/my-fixtures';
 
 test('Landing page should have a list of tags in the sidebar', async({landingPage}) =>{
     await expect(landingPage.tagListLocator).toBeVisible();
@@ -6,7 +6,7 @@ test('Landing page should have a list of tags in the sidebar', async({landingPag
 
 test.describe('mock data for the tags API', () =>{    
     test.beforeEach(async ({page})=>{  
-        page.route(`${process.env.API_URL}/tags`, route =>{
+        page.route(`${process.env.API_URL}/api/tags`, route =>{
             const tags= {
                 "tags": [
                     "Test",
@@ -24,7 +24,7 @@ test.describe('mock data for the tags API', () =>{
 
 test.describe('change api response data', () =>{
     test.beforeEach(async ({page})=>{
-        page.route(`${process.env.API_URL}/tags`, async route =>{
+        page.route(`${process.env.API_URL}/api/tags`, async route =>{
             const response= await route.fetch();
             const data = await response.json();
             data.tags.push('Custom tag bla bla');

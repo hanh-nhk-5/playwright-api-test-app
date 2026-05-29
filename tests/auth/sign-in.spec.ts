@@ -1,6 +1,6 @@
 
-import { SignInPage } from '../page-objects/sign-in-page';
-import { test } from './my-fixtures';
+import { SignInPage } from '../../src/pages/sign-in-page';
+import { test } from '../../src/fixtures/my-fixtures';
 
 test.use({
     //use the isolated storage state for this test to ensure it runs without any pre-existing authentication data
