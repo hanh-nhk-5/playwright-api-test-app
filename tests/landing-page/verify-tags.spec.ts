@@ -1,4 +1,5 @@
-import {test, expect} from '../../src/fixtures/my-fixtures';
+import {test} from '../../src/fixtures/landing-page.fixture';
+import { expect } from '@playwright/test';
 
 test('Landing page should have a list of tags in the sidebar', async({landingPage}) =>{
     await expect(landingPage.tagListLocator).toBeVisible();

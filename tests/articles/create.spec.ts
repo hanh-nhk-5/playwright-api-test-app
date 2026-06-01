@@ -1,6 +1,7 @@
 
-import { ArticleDetailsPage } from '../../src/pages/article-details-page';
-import {test, expect} from '../../src/fixtures/my-fixtures';
+import {test} from '../../src/fixtures/article.fixture';
+import { expect } from '@playwright/test';
+import { ArticleDetailsPage } from '../../src/pages/article-details.page';
 import { deleteArticleBySlug } from '../../src/apis/article.api';
 
 test.describe('Creating a new article', () =>{
@@ -18,7 +19,7 @@ test.describe('Creating a new article', () =>{
                 response.request().method() === 'POST' &&
                 response.status() === 201
             ),
-            newArticlePage.createArticle(title, description, body, tags),
+            newArticlePage.publishArticle(title, description, body, tags),
         ]);
 
         expect(createArticleResponse.ok()).toBeTruthy();
