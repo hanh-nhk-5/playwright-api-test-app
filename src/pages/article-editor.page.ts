@@ -7,15 +7,13 @@ import {Page, Locator} from '@playwright/test';
     tagDeleleButtons: Locator;
     publishButton: Locator;
 
-    // slug: string | undefined;
     constructor(public page: Page, slug?: string){
         this.titleInput= page.locator('input[formcontrolname="title"]');
         this.descriptionInput= page.locator('input[formcontrolname="description"]');
         this.bodyInput= page.locator('textarea[formcontrolname="body"]');
         this.tagsInput= page.locator('input[placeholder="Enter tags"]');
         this.tagDeleleButtons= page.locator('.tag-list .tag-pill .ion-close-round');
-        this.publishButton= page.getByRole('button', {name: /Publish Article/});
-        // this.slug = slug;
+        this.publishButton= page.getByRole('button', {name: /Publish Article/});    
     }
 
     async publishArticle(title: string, description: string, body: string, tags: string[]){

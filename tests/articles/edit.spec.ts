@@ -1,18 +1,18 @@
 import { expect } from '@playwright/test';
-import {test} from '../../src/fixtures/edit.article.fixture';
+import {test} from '../../src/fixtures/edit-article.fixture';
 import { ArticleDetailsPage } from '../../src/pages/article-details.page';
 
-test('should edit an existing article successfully', async({articleEditorPage}) =>{
+test('should edit an existing article successfully', async({editArticlePage}) =>{
     //Wait for the title input to be populated with the existing article title before proceeding with edits
-    await expect(articleEditorPage.titleInput).not.toHaveValue('', { timeout: 10000 });
+    await expect(editArticlePage.titleInput).not.toHaveValue('', { timeout: 10000 });
 
     const updatedTitle = `Updated Article Title ${Date.now()}`;    
     const updatedDescription = 'update description';
     const updatedBody = 'update body';
     const updatedTags = ['new tag'];    
-    await articleEditorPage.publishArticle(updatedTitle, updatedDescription, updatedBody, updatedTags);    
+    await editArticlePage.publishArticle(updatedTitle, updatedDescription, updatedBody, updatedTags);    
     
-    const articleDetailsPage = new ArticleDetailsPage(articleEditorPage.page);    
+    const articleDetailsPage = new ArticleDetailsPage(editArticlePage.page);    
     await articleDetailsPage.title.waitFor({ state: 'visible', timeout: 10000 });
     const actualTitle = await articleDetailsPage.title.textContent();
     const actualBody = await articleDetailsPage.body.textContent();    

@@ -1,9 +1,10 @@
 import {test as base} from './landing-page.fixture';
 import { ArticleEditorPage } from '../pages/article-editor.page';
 import {createArticle, deleteArticleBySlug} from '../apis/article.api';
+import {Response} from '@playwright/test'
 
-export const test= base.extend<{ articleEditorPage: ArticleEditorPage }>({
-    articleEditorPage: async ({landingPage, request}, use) =>{
+export const test= base.extend<{ editArticlePage: ArticleEditorPage }>({
+    editArticlePage: async ({landingPage, request}, use) =>{
         //Step 1. create a new article 
         const title= `My new article ${Date.now()}`;
         const description= 'This is a description for my new article';
@@ -16,7 +17,7 @@ export const test= base.extend<{ articleEditorPage: ArticleEditorPage }>({
         const articleEditorPage = await articleDetailsPage.openArticleEditor();
 
         const updateSlugTasks: Promise<void>[] = [];
-        const onResponse = (response: import('@playwright/test').Response) => {
+        const onResponse = (response: Response) => {
             if (response.url().includes('/api/articles') && response.request().method() === 'PUT' && response.ok()) {
                 const task = response.json()
                     .then((responseBody: unknown) => {

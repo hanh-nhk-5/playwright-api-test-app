@@ -1,10 +1,10 @@
 import {Page} from '@playwright/test';
-import { SignInPage } from './sign-in-page';
+import { SignInPage } from './sign-in.page';
 import { NavigationPage } from './navigation.page';
 import { LandingPage } from './landing.page';
 import { ArticleDetailsPage } from './article-details.page';
 import { ArticleEditorPage } from './article-editor.page';
-import { SignUpPage } from './sign-up-page';
+import { SignUpPage } from './sign-up.page';
 
 export class PageManager{
     navigationPage: NavigationPage;
