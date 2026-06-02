@@ -26,7 +26,12 @@ import {Page, Locator} from '@playwright/test';
     }
 
     private async fillTags(tags: string[]){
-        (await this.tagDeleleButtons.all()).forEach(button => button.click());
+        
+        while(await this.tagDeleleButtons.count() > 0){
+            const button =  this.tagDeleleButtons.first();
+            await button.waitFor({state: 'visible'});
+            await button.click();
+        }
 
         for(const tag of tags){
             await this.tagsInput.fill(tag);

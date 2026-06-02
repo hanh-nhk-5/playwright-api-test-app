@@ -1,4 +1,4 @@
-import { LandingPage } from "../../src/pages/landing.page";
+import { FeedsPage } from "../../src/pages/feeds.page";
 import { test } from "../../src/fixtures/sign-up.fixture";
 import { expect } from "@playwright/test";
 
@@ -23,7 +23,7 @@ test('should sign up a new user successfully', async({ signUpPage }) =>{
     expect(responseBody.user.username).toBe(username);
     expect(responseBody.user.email).toBe(email);    
     
-    const landingPage = new LandingPage(signUpPage.page);
-    await expect(landingPage.tagListLocator).toBeVisible();
+    const feedsPage = new FeedsPage(signUpPage.page);
+    await expect(feedsPage.tagListLocator).toBeVisible();
     
 })

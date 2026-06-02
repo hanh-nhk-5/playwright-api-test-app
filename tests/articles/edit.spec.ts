@@ -13,10 +13,10 @@ test('should edit an existing article successfully', async({editArticlePage}) =>
     await editArticlePage.publishArticle(updatedTitle, updatedDescription, updatedBody, updatedTags);    
     
     const articleDetailsPage = new ArticleDetailsPage(editArticlePage.page);    
-    await articleDetailsPage.title.waitFor({ state: 'visible', timeout: 10000 });
-    const actualTitle = await articleDetailsPage.title.textContent();
-    const actualBody = await articleDetailsPage.body.textContent();    
-    const actualTags = await articleDetailsPage.tagList.locator('.tag-default').allTextContents()
+    await articleDetailsPage.titleLocator.waitFor({ state: 'visible', timeout: 10000 });
+    const actualTitle = await articleDetailsPage.titleLocator.textContent();
+    const actualBody = await articleDetailsPage.bodyLocator.textContent();    
+    const actualTags = await articleDetailsPage.tagListLocator.locator('.tag-default').allTextContents()
         .then(tags => tags.map(tag => tag.trim())) ;
 
     expect(actualTitle?.trim()).toBe(updatedTitle);

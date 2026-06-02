@@ -12,9 +12,9 @@ export const test= base.extend<{ editArticlePage: ArticleEditorPage }>({
         const tags= ['test', 'playwright'];
         let slug = await createArticle(request, title, description, body, tags);
          
-        const landingPage = pageManager.onLandingPage();
-        await landingPage.openGlobalFeed();
-        const articleDetailsPage = await landingPage.viewArticleBySlug(slug);
+        const feedsPage = pageManager.onFeedsPage();
+        await feedsPage.openGlobalFeed();
+        const articleDetailsPage = await feedsPage.viewArticleBySlug(slug);
         const articleEditorPage = await articleDetailsPage.openArticleEditor();
 
         const updateSlugTasks: Promise<void>[] = [];
