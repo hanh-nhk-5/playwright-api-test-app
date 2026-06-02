@@ -4,7 +4,7 @@ import process from "process";
 
 setup ('authenticate', async ({request}) => {       
     console.log('Starting authentication setup...');          
-    let apiResponse= await request.post(`${process.env.API_URL}/api/users/login`, {
+    let apiResponse= await request.post(`${process.env.API_BASE_URL}/api/users/login`, {
         data: {
             "user":{
                 "email": process.env.MY_EMAIL!,

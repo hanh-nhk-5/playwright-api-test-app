@@ -1,5 +1,5 @@
-import {test as base} from './page-manager.fixture';
-import { SignInPage } from '../pages/sign-in-page';
+import {test as base} from './base.fixture';
+import { SignInPage } from '../pages/sign-in.page';
 
 export const test= base.extend<{ signinPage: SignInPage }>({
     signinPage: async ({pageManager}, use) =>{

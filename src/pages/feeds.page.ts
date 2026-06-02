@@ -1,7 +1,7 @@
 import {Page, Locator, APIRequestContext} from '@playwright/test';
 import { ArticleDetailsPage } from './article-details.page';
 
-export class LandingPage{
+export class FeedsPage{
     tagListLocator: Locator;
     globalFeedTabLocator: Locator;
     constructor(public page: Page){
@@ -39,4 +39,9 @@ export class LandingPage{
         }
         return parts.slice(0, -1).join(' ');
     }
+
+    async isThereArticleWithTitle(title: string): Promise<boolean>{
+        const articleLinkLocator = this.page.locator('a.preview-link h1', {hasText: title});
+        return await articleLinkLocator.count() > 0;
+    }        
 }

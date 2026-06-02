@@ -1,18 +1,27 @@
 import {Locator, Page} from '@playwright/test';
 import { ArticleEditorPage } from './article-editor.page';
 export class ArticleDetailsPage{
-    title: Locator;
-    body: Locator;
-    tagList: Locator;
+    titleLocator: Locator;
+    bodyLocator: Locator;
+    tagListLocator: Locator;
+
     constructor(public page: Page){
-        this.title = page.locator('.banner h1');
-        this.body = page.locator('.article-content p');
-        this.tagList = page.locator('.tag-list');
+        this.titleLocator = page.locator('.banner h1');
+        this.bodyLocator = page.locator('.article-content p');
+        this.tagListLocator = page.locator('.tag-list');
     }
 
     async openArticleEditor(): Promise<ArticleEditorPage>{
         // await this.page.waitForSelector('a:has-text("Edit Article")', { timeout: 5000 });
         await this.page.locator('.banner app-article-meta a', { hasText: 'Edit Article' }).click();        
         return new ArticleEditorPage(this.page);
+    }
+
+    async getTitle(): Promise<string|null> {
+        return await this.titleLocator.textContent();
+    }
+
+    async deleteArticle(){
+        await this.page.locator('.banner app-article-meta button', { hasText: 'Delete Article' }).click();
     }
 }

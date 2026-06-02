@@ -7,7 +7,7 @@ import { ArticleDetailsPage } from '../../src/pages/article-details.page';
 test.describe('Creating a new article', () =>{   
 
     test('should create a new article successfully', async({newArticlePage}) =>{
-        const title= `My new article ${Date.now()}`;
+        const title= `Hanh's article ${Date.now()}`;
         const description= 'This is a description for my new article';
         const body= 'This is the body of my new article';
         const tags= ['test', 'playwright'];

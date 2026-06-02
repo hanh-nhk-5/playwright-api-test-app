@@ -1,5 +1,5 @@
 import { ArticleEditorPage } from '../pages/article-editor.page';
-import{ test as base} from './page-manager.fixture';
+import{ test as base} from './base.fixture';
 import { deleteArticleBySlug } from '../../src/apis/article.api';
 import {Response} from '@playwright/test';
 

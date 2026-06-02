@@ -6,7 +6,7 @@ test('should edit an existing article successfully', async({editArticlePage}) =>
     //Wait for the title input to be populated with the existing article title before proceeding with edits
     await expect(editArticlePage.titleInput).not.toHaveValue('', { timeout: 10000 });
 
-    const updatedTitle = `Updated Article Title ${Date.now()}`;    
+    const updatedTitle = `Hanh's updated article ${Date.now()}`;    
     const updatedDescription = 'update description';
     const updatedBody = 'update body';
     const updatedTags = ['new tag'];    

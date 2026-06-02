@@ -1,10 +1,10 @@
-import {test as base} from './landing-page.fixture';
+import {test as base} from './base.fixture';
 import { ArticleEditorPage } from '../pages/article-editor.page';
 import {createArticle, deleteArticleBySlug} from '../apis/article.api';
 import {Response} from '@playwright/test'
 
 export const test= base.extend<{ editArticlePage: ArticleEditorPage }>({
-    editArticlePage: async ({landingPage, request}, use) =>{
+    editArticlePage: async ({pageManager, request}, use) =>{
         //Step 1. create a new article 
         const title= `My new article ${Date.now()}`;
         const description= 'This is a description for my new article';
@@ -12,6 +12,7 @@ export const test= base.extend<{ editArticlePage: ArticleEditorPage }>({
         const tags= ['test', 'playwright'];
         let slug = await createArticle(request, title, description, body, tags);
          
+        const landingPage = pageManager.onLandingPage();
         await landingPage.openGlobalFeed();
         const articleDetailsPage = await landingPage.viewArticleBySlug(slug);
         const articleEditorPage = await articleDetailsPage.openArticleEditor();

@@ -1,7 +1,7 @@
 import {Page} from '@playwright/test';
 import { SignInPage } from './sign-in.page';
 import { NavigationPage } from './navigation.page';
-import { LandingPage } from './landing.page';
+import { FeedsPage } from './feeds.page';
 import { ArticleDetailsPage } from './article-details.page';
 import { ArticleEditorPage } from './article-editor.page';
 import { SignUpPage } from './sign-up.page';
@@ -10,14 +10,14 @@ export class PageManager{
     navigationPage: NavigationPage;
     signUpPage: SignUpPage;
     signInPage: SignInPage;
-    landingPage: LandingPage;
+    feedsPage: FeedsPage;
     newArticlePage: ArticleEditorPage;
     articleDetailsPage: ArticleDetailsPage;
     constructor(public page: Page){
         this.navigationPage= new NavigationPage(this.page);
         this.signUpPage= new SignUpPage(this.page);
         this.signInPage= new SignInPage(this.page);
-        this.landingPage= new LandingPage(this.page);
+        this.feedsPage= new FeedsPage(this.page);
         this.newArticlePage= new ArticleEditorPage(this.page);
         this.articleDetailsPage= new ArticleDetailsPage(this.page);
     }
@@ -34,8 +34,8 @@ export class PageManager{
         return this.signInPage;
     }
 
-    onLandingPage(){
-        return this.landingPage;
+    onFeedsPage(){
+        return this.feedsPage;
     }
 
     onNewArticlePage(){
