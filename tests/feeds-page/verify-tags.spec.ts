@@ -1,25 +1,27 @@
 import {test} from '../../src/fixtures/feeds.fixture';
 import { expect } from '@playwright/test';
 
-test('Landing page should have a list of tags in the sidebar', async({feedsPage}) =>{
+test('Feeds page should have a list of tags in the sidebar', async({feedsPage}) =>{
     await expect(feedsPage.tagListLocator).toBeVisible();
 });
 
 test.describe('mock data for the tags API', () =>{    
+    const mockTags = ["RSS", "Atom", "Podcast", "Newsletter", "Syndication Feed", "Web Feed", 
+        "XML", "JSON Feed", "RSS Reader", "Feed Aggregator", "Feedly", "Inoreader", "NewsBlur", 
+        "The Old Reader", "Feedbin", "Tiny Tiny RSS", "Flipboard", "Pocket", "Instapaper", 
+        "Feed Wrangler", "BazQux Reader", "CommaFeed"];
+    
     test.beforeEach(async ({page})=>{  
         page.route(`${process.env.API_BASE_URL}/api/tags`, route =>{
             const tags= {
-                "tags": [
-                    "Test",
-                    "Blog"
-                ]
+                "tags": mockTags
             };
             route.fulfill({body: JSON.stringify(tags)});
         });
     })
 
-    test('should display the tags from the API', async({feedsPage}) =>{
-        await expect(feedsPage.tagListLocator).toHaveText(' Test  Blog ');
+    test('should display all tags from the API', async({feedsPage}) =>{
+        await expect(feedsPage.tagListLocator).toHaveText(mockTags.join(' '));
     })    
 });
 
@@ -33,7 +35,7 @@ test.describe('change api response data', () =>{
         })
     })
 
-    test('should display the custom tag in the UI', async({feedsPage})=>{
+    test('should display the custom tag from the API', async({feedsPage})=>{
         await expect(feedsPage.tagListLocator).toContainText('Custom tag bla bla');
     })
 });

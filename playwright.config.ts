@@ -14,7 +14,7 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
  */
 export default defineConfig({
   testDir: './tests',  
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,  
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
@@ -24,20 +24,21 @@ export default defineConfig({
     baseURL: 'https://conduit.bondaracademy.com/',
     storageState: process.env.AUTHENTICATION_FILE_PATH,
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'authenticate', 
-      testMatch: 'auth-setup.ts'
+      testMatch: 'auth.setup.ts'
     },
     {
       name: 'chromium',
       use: { 
         ...devices['Desktop Chrome'] ,        
       },
-      dependencies: ['authenticate'],
+      dependencies: ['authenticate'],      
     },
 
     {
