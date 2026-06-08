@@ -11,10 +11,9 @@ export const test= base.extend<{ editArticlePage: ArticleEditorPage }>({
             title: `Hanh new article ${Date.now()}`,
             description: 'This is a description for my new article',
             body: 'This is the body of my new article',
-            tags: ['test', 'playwright']
+            tagList: ['test', 'playwright']
         }
-        let slug = await createArticle(request, article);
-         
+        let slug = await createArticle(request, article);         
 
         const feedsPage = pageManager.onFeedsPage();
         await feedsPage.openGlobalFeed();
