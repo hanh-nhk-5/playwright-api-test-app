@@ -1,7 +1,7 @@
-import {test} from '../../src/fixtures/paging.fixture';
+import {test} from '../../src/fixtures/feeds-paging.fixture';
 import { expect } from '@playwright/test';
 
-test('User can view the correct number of pages in the global feed', async ({feedsPage, request}) =>{
+test('User can view the correct number of pages in the global feed', async ({feedsPage}) =>{
     const [apiResponse] = await Promise.all([
         feedsPage.page.waitForResponse(response =>
             response.url().includes('/api/articles') &&                

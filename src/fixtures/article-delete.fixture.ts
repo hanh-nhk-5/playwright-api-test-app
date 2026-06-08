@@ -1,4 +1,4 @@
-import {test as base} from '../fixtures/base.fixture';
+import {test as base} from './base.fixture';
 import { ArticleDetailsPage } from '../pages/article-details.page';
 
 export const test = base.extend<{articleDetailsPage: ArticleDetailsPage}>({

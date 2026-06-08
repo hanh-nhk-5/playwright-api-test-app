@@ -1,4 +1,4 @@
-import {test} from '../../src/fixtures/favorite.fixture';
+import {test} from '../../src/fixtures/feeds-favorite.fixture';
 import { expect } from '@playwright/test';
 
 test('User can favorite and remove the favorite from an article in the global feed and see its counter increase', async ({feedsPage, favoriteArticleTitle}) => {    

@@ -19,7 +19,7 @@ export const test = base.extend<{createdArticleTitles: string[]}>({
             createdSlugs.push(slug);
             createdArticleTitles.push(title);
         }
-        use(createdArticleTitles);
+        await use(createdArticleTitles);
 
         //cleanup created articles after test
         await Promise.all(createdSlugs.map(slug => deleteArticleBySlug(request, slug)));

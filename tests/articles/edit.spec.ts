@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import {test} from '../../src/fixtures/edit-article.fixture';
+import {test} from '../../src/fixtures/article-edit.fixture';
 import { ArticleDetailsPage } from '../../src/pages/article-details.page';
 
 test('should edit an existing article successfully', async({editArticlePage}) =>{

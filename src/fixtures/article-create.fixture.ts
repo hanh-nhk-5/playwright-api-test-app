@@ -1,6 +1,6 @@
 import { ArticleEditorPage } from '../pages/article-editor.page';
 import{ test as base} from './base.fixture';
-import { deleteArticleBySlug } from '../../src/apis/article.api';
+import { deleteArticleBySlug } from '../apis/article.api';
 import {Response} from '@playwright/test';
 
 export const test= base.extend<{ newArticlePage: ArticleEditorPage }>({

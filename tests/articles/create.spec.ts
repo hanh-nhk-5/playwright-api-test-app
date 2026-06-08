@@ -1,4 +1,4 @@
-import {test} from '../../src/fixtures/create-article.fixture';
+import {test} from '../../src/fixtures/article-create.fixture';
 import { expect } from '@playwright/test';
 import { ArticleDetailsPage } from '../../src/pages/article-details.page';
 
