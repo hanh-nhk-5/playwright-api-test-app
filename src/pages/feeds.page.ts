@@ -3,13 +3,32 @@ import { ArticleDetailsPage } from './article-details.page';
 
 export class FeedsPage{
     readonly articlesPerPage = 10;
-    tagListLocator: Locator;
+    popularTagListLocator: Locator;    
     globalFeedTabLocator: Locator;
     paginationLocator: Locator;
     constructor(public page: Page){
-        this.tagListLocator= this.page.locator('.sidebar .tag-list');
+        this.popularTagListLocator= this.page.locator('.sidebar .tag-list');        
         this.globalFeedTabLocator= this.page.locator('a.nav-link', {hasText: 'Global Feed'});
         this.paginationLocator= this.page.locator('.pagination');
+    }
+
+    async allArticlesHaveTag(tagName: string): Promise<boolean>{
+        const articleCount = await this.page.locator('.article-preview').count();
+        for(let i=0 ; i < articleCount; i++){
+            const article = this.page.locator('.article-preview').nth(i);
+            const tags = (await article.locator('.tag-list .tag-pill').allTextContents()).map(tag => tag.trim());
+            console.log(`Article ${i+1} tags:`, tags);
+            if(tags.length === 0 || !tags.includes(tagName)){
+                return false;
+            }
+        }
+        return true;
+
+    }
+
+    async clickTag(tagName: string){
+        const tagLocator = this.popularTagListLocator.locator('a.tag-pill', {hasText: new RegExp(`^\\s*${tagName}\\s*$`)});
+        await tagLocator.click();
     }
 
     async getNumberOfPages(): Promise<number>{        
