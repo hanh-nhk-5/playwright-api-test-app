@@ -2,11 +2,23 @@ import {Page, Locator, APIRequestContext} from '@playwright/test';
 import { ArticleDetailsPage } from './article-details.page';
 
 export class FeedsPage{
+    readonly articlesPerPage = 10;
     tagListLocator: Locator;
     globalFeedTabLocator: Locator;
+    paginationLocator: Locator;
     constructor(public page: Page){
         this.tagListLocator= this.page.locator('.sidebar .tag-list');
         this.globalFeedTabLocator= this.page.locator('a.nav-link', {hasText: 'Global Feed'});
+        this.paginationLocator= this.page.locator('.pagination');
+    }
+
+    async getNumberOfPages(): Promise<number>{        
+        return await this.paginationLocator.locator('li.page-item').count();
+    }
+
+    async clickPagination(pageNumber: number){
+        const pageLinkLocator = this.paginationLocator.locator('.page-link', {hasText: new RegExp(`^\\s*${pageNumber}\\s*$`)});
+        await pageLinkLocator.click();
     }
 
     async openGlobalFeed(){

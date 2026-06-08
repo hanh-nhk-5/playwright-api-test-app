@@ -1,7 +1,8 @@
 import {test} from '../../src/fixtures/favorite.fixture';
 import { expect } from '@playwright/test';
 
-test('User can favorite and remove the favorite from an article in the global feed and see its counter increase', async ({feedsPage, favoriteArticleTitle}) => {
+test('User can favorite and remove the favorite from an article in the global feed and see its counter increase', async ({feedsPage, favoriteArticleTitle}) => {    
+    
     const favoriteButton = await feedsPage.getFavoriteLocatorWithTitle(favoriteArticleTitle);
     await expect(favoriteButton).toHaveCount(1);
 
