@@ -1,13 +1,20 @@
 import { APIRequestContext } from "@playwright/test";
+import { Article } from "../types/article";
 
-export async function createArticle(request: APIRequestContext, title: string, description: string, body: string, tags: string[]): Promise<string> {
+/**
+ * 
+ * @param request 
+ * @param article: Article object containing title, description, body and tags
+ * @returns: slug of the created article
+ */
+export async function createArticle(request: APIRequestContext, article: Article): Promise<string> {
     const response = await request.post('/api/articles', {
         data: {
             "article": {
-                "title": title,
-                "description": description,
-                "body": body,
-                "tagList": tags
+                "title": article.title,
+                "description": article.description,
+                "body": article.body,
+                "tagList": article.tags
             }
         }
     });

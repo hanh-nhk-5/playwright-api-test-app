@@ -2,16 +2,20 @@ import {test as base} from './base.fixture';
 import { ArticleEditorPage } from '../pages/article-editor.page';
 import {createArticle, deleteArticleBySlug} from '../apis/article.api';
 import {Response} from '@playwright/test'
+import { Article } from '../types/article';
 
 export const test= base.extend<{ editArticlePage: ArticleEditorPage }>({
     editArticlePage: async ({pageManager, request}, use) =>{
         //Step 1. create a new article 
-        const title= `My new article ${Date.now()}`;
-        const description= 'This is a description for my new article';
-        const body= 'This is the body of my new article';
-        const tags= ['test', 'playwright'];
-        let slug = await createArticle(request, title, description, body, tags);
+        const article: Article ={
+            title: `Hanh new article ${Date.now()}`,
+            description: 'This is a description for my new article',
+            body: 'This is the body of my new article',
+            tags: ['test', 'playwright']
+        }
+        let slug = await createArticle(request, article);
          
+
         const feedsPage = pageManager.onFeedsPage();
         await feedsPage.openGlobalFeed();
         const articleDetailsPage = await feedsPage.viewArticleBySlug(slug);
