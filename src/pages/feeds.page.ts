@@ -53,13 +53,14 @@ export class FeedsPage{
     }
 
     async isThereArticleWithTitle(title: string): Promise<boolean>{
-        const articleTitleLocator = this.page.locator('a.preview-link h1', {hasText: title});
+        title = title.trim();
+        const articleTitleLocator = this.page.locator('a.preview-link h1', {hasText: new RegExp(`^\\s*${title}\\s*$`)});
         return await articleTitleLocator.count() > 0;
     }        
 
     async getFavoriteLocatorWithTitle(title: string): Promise<Locator>{
         const articleTitleLocator = this.page.locator('.article-preview')
-            .filter({has: this.page.locator('a.preview-link h1', {hasText: title})})
+            .filter({has: this.page.locator('a.preview-link h1', {hasText: new RegExp(`^\\s*${title}\\s*$`)})})
             .locator('button.btn.btn-sm'); 
         return articleTitleLocator;
     }
