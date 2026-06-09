@@ -1,5 +1,7 @@
 import {Page, Locator} from '@playwright/test';
- export class ArticleEditorPage{
+import { Article } from '../types/article';
+
+export class ArticleEditorPage{
     titleInput: Locator;
     descriptionInput: Locator;
     bodyInput: Locator;
@@ -16,12 +18,11 @@ import {Page, Locator} from '@playwright/test';
         this.publishButton= page.getByRole('button', {name: /Publish Article/});    
     }
 
-    async publishArticle(title: string, description: string, body: string, tags: string[]){
-        await this.titleInput.fill(title);
-        await this.descriptionInput.fill(description);
-        await this.bodyInput.fill(body);
-        await this.tagsInput.fill('');
-        await this.fillTags(tags);
+    async publishArticle(article: Article){
+        await this.titleInput.fill(article.title);
+        await this.descriptionInput.fill(article.description);
+        await this.bodyInput.fill(article.body);        
+        await this.fillTags(article.tagList);
         await this.publishButton.click();
     }
 

@@ -11,6 +11,12 @@ export class ArticleDetailsPage{
         this.tagListLocator = page.locator('.tag-list');
     }
 
+    async matchTags(expectedTags: string[]): Promise<boolean>{
+        expectedTags = expectedTags.map(tag => tag.trim().toUpperCase());
+        const tags = (await this.tagListLocator.locator('.tag-pill').allTextContents()).map(tag => tag.trim().toUpperCase());        
+        return expectedTags.every(tag => tags.includes(tag));
+    }
+
     async openArticleEditor(): Promise<ArticleEditorPage>{
         // await this.page.waitForSelector('a:has-text("Edit Article")', { timeout: 5000 });
         await this.page.locator('.banner app-article-meta a', { hasText: 'Edit Article' }).click();        
