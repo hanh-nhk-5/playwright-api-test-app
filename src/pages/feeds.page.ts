@@ -1,15 +1,19 @@
-import {Page, Locator, APIRequestContext} from '@playwright/test';
+import {Page, Locator} from '@playwright/test';
 import { ArticleDetailsPage } from './article-details.page';
+import { Article } from '../types/article';
+import { areArraysEqual } from '../utils/array.util';
 
 export class FeedsPage{
     readonly articlesPerPage = 10;
     popularTagListLocator: Locator;    
     globalFeedTabLocator: Locator;
     paginationLocator: Locator;
+    articleCards: Locator;
     constructor(public page: Page){
         this.popularTagListLocator= this.page.locator('.sidebar .tag-list');        
         this.globalFeedTabLocator= this.page.locator('a.nav-link', {hasText: 'Global Feed'});
         this.paginationLocator= this.page.locator('.pagination');
+        this.articleCards = this.page.locator('app-article-preview');
     }
 
     async allArticlesHaveTag(tagName: string): Promise<boolean>{
@@ -75,7 +79,25 @@ export class FeedsPage{
         title = title.trim();
         const articleTitleLocator = this.page.locator('a.preview-link h1', {hasText: new RegExp(`^\\s*${title}\\s*$`)});
         return await articleTitleLocator.count() > 0;
-    }        
+    } 
+    
+    async display(article: Article): Promise<boolean>{        
+        const articleCard = this.articleCards.filter({has: this.page.locator('a.preview-link h1', {hasText: new RegExp(`^\\s*${article.title}\\s*$`)})});
+        if(await articleCard.count() === 0){
+            console.warn(`Article with title "${article.title}" not found in the feed.`);
+            return false;
+        }
+
+        const actualDescription = (await articleCard.locator('p').first().textContent())?.trim().toUpperCase() ?? '';        
+        const actualTags = (await articleCard.locator('.tag-list .tag-pill').allTextContents()).map(tag => tag.trim().toUpperCase());
+        article.description = article.description.trim().toUpperCase()
+        article.tagList = article.tagList.map(tag => tag.trim().toUpperCase());
+        if(actualDescription !== article.description || !areArraysEqual(actualTags, article.tagList)){
+            return false;
+        }
+ 
+        return true;    
+    }
 
     async getFavoriteLocatorWithTitle(title: string): Promise<Locator>{
         const articleTitleLocator = this.page.locator('.article-preview')
