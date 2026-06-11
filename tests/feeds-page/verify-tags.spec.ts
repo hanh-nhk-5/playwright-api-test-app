@@ -2,7 +2,7 @@ import {test} from '../../src/fixtures/feeds.fixture';
 import { expect } from '@playwright/test';
 
 test('Feeds page should have a list of tags in the sidebar', async({feedsPage}) =>{
-    await expect(feedsPage.tagListLocator).toBeVisible();
+    await expect(feedsPage.popularTagListLocator).toBeVisible();
 });
 
 test.describe('mock data for the tags API', () =>{    
@@ -21,7 +21,7 @@ test.describe('mock data for the tags API', () =>{
     })
 
     test('should display all tags from the API', async({feedsPage}) =>{
-        await expect(feedsPage.tagListLocator).toHaveText(mockTags.join(' '));
+        await expect(feedsPage.popularTagListLocator).toHaveText(mockTags.join(' '));
     })    
 });
 
@@ -36,6 +36,6 @@ test.describe('change api response data', () =>{
     })
 
     test('should display the custom tag from the API', async({feedsPage})=>{
-        await expect(feedsPage.tagListLocator).toContainText('Custom tag bla bla');
+        await expect(feedsPage.popularTagListLocator).toContainText('Custom tag bla bla');
     })
 });
