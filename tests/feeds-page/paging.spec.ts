@@ -8,28 +8,32 @@ test('User can view the correct number of pages in the global feed', async ({fee
             response.request().method() === 'GET' &&
             response.ok()
         ),
-        feedsPage.openGlobalFeed(),
+        feedsPage.reloadGlobalFeedTag() 
     ]);
 
-    expect(apiResponse.ok()).toBeTruthy();    
+    expect(apiResponse.ok()).toBeTruthy();
 
     const responseData = await apiResponse.json();
     const totalArticles = responseData.articlesCount;
     const expectedPages = Math.ceil(totalArticles / feedsPage.articlesPerPage);
 
-    await expect(feedsPage.paginationLocator).toBeVisible();    
-    expect(await feedsPage.getNumberOfPages()).toBe(expectedPages);
+    await expect.poll(async () => {
+        const paginationVisible = await feedsPage.paginationLocator.isVisible().catch(() => false);
+        return paginationVisible ? await feedsPage.getNumberOfPages() : 1;
+    }).toBe(expectedPages);
 });
 
 test('User can navigate to every page in the global feed', async ({feedsPage})=>{
     const [apiResponse] = await Promise.all([
         feedsPage.page.waitForResponse(response =>
-            response.url().includes('/api/articles') &&
+            response.url().includes('/api/articles') &&                
             response.request().method() === 'GET' &&
             response.ok()
         ),
-        feedsPage.openGlobalFeed()
+        feedsPage.reloadGlobalFeedTag()      
     ]);
+
+    expect(apiResponse.ok()).toBeTruthy();
 
     const responseData = await apiResponse.json();
     responseData.articles.forEach((article: {title: string}) => {

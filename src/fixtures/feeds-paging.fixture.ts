@@ -14,7 +14,7 @@ export const test = base.extend<{createdArticleTitles: string[]}>({
                 title: title,
                 description: 'Description for paging test',
                 body: 'Body of the article for paging test',
-                tags: ['paging', 'test']
+                tagList: ['paging', 'test']
             });
             createdSlugs.push(slug);
             createdArticleTitles.push(title);
@@ -24,7 +24,7 @@ export const test = base.extend<{createdArticleTitles: string[]}>({
         //cleanup created articles after test
         await Promise.all(createdSlugs.map(slug => deleteArticleBySlug(request, slug)));
     },
-    feedsPage: async ({feedsPage, createdArticleTitles}, use) =>{
+    feedsPage: async ({createdArticleTitles, feedsPage}, use) =>{
         void createdArticleTitles; // ensure articles are created before test starts        
         
         await use(feedsPage);

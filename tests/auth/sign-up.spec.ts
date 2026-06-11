@@ -24,6 +24,6 @@ test('should sign up a new user successfully', async({ signUpPage }) =>{
     expect(responseBody.user.email).toBe(email);    
     
     const feedsPage = new FeedsPage(signUpPage.page);
-    await expect(feedsPage.tagListLocator).toBeVisible();
+    await expect(feedsPage.popularTagListLocator).toBeVisible();
     
 })

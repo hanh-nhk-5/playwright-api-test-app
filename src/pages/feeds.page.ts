@@ -16,18 +16,28 @@ export class FeedsPage{
         this.articleCards = this.page.locator('app-article-preview');
     }
 
+    async isGlobalFeedTabActive(): Promise<boolean>{
+        const classAttribute = await this.globalFeedTabLocator.getAttribute('class');
+        return classAttribute?.split(' ').includes('active') ?? false;
+    }
+
+    async reloadGlobalFeedTag(){
+        if(await this.isGlobalFeedTabActive())
+            await this.page.reload(); // reload to ensure global feed is loaded and tags are displayed 
+        else 
+            await this.openGlobalFeed();
+    }
+
     async allArticlesHaveTag(tagName: string): Promise<boolean>{
         const articleCount = await this.page.locator('.article-preview').count();
         for(let i=0 ; i < articleCount; i++){
             const article = this.page.locator('.article-preview').nth(i);
-            const tags = (await article.locator('.tag-list .tag-pill').allTextContents()).map(tag => tag.trim());
-            console.log(`Article ${i+1} tags:`, tags);
+            const tags = (await article.locator('.tag-list .tag-pill').allTextContents()).map(tag => tag.trim());            
             if(tags.length === 0 || !tags.includes(tagName)){
                 return false;
             }
         }
         return true;
-
     }
 
     async clickTag(tagName: string){

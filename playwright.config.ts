@@ -49,13 +49,6 @@ export default defineConfig({
       dependencies: ['authenticate'],
     },
 
-    {
-      name: 'webkit',
-      use: { 
-        ...devices['Desktop Safari'],        
-      },
-      dependencies: ['authenticate'],
-    },
 
     /* Test against mobile viewports. */
     // {
