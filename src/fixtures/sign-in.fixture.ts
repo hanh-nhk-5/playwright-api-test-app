@@ -3,6 +3,7 @@ import { SignInPage } from '../pages/sign-in.page';
 
 export const test= base.extend<{ signinPage: SignInPage }>({
     signinPage: async ({pageManager}, use) =>{
+        await pageManager.navigate().goToHomePage();
         await pageManager.navigate().goToSignInPage(); 
         await use(pageManager.onSignInPage());
     }

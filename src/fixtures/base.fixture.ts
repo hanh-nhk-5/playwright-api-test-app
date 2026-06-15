@@ -14,14 +14,14 @@ export const test= base.extend<{ pageManager: PageManager }>({
     },
 
     pageManager: async ({page}, use) =>{
-        await page.goto('/');
+        // await page.goto('/');//Hanh - not needed to go to the home page here as the tests will navigate to the required page through the page manager, and going to the home page here adds extra time to the test execution for tests that don't start from the home page
         const pageManager = new PageManager(page);
         await use(pageManager);
     }
 });
 
 function getJwtTokenFromAuthState(): string | undefined {
-    const authFilePath = process.env.AUTHENTICATION_FILE_PATH || 'src/.auth/user.json';
+    const authFilePath = process.env.AUTHENTICATION_FILE_PATH || '.auth/user.json';
     const authState = JSON.parse(fs.readFileSync(authFilePath, 'utf8')) as {
         origins?: Array<{
             localStorage?: Array<{ name: string; value: string }>;

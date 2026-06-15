@@ -1,4 +1,4 @@
-import {test as base} from './feeds.fixture';
+import {test as base} from './base.fixture';
 import {createArticle, deleteArticleBySlug} from '../apis/article.api';
 
 export const test = base.extend<{createdArticleTitles: string[]}>({
@@ -19,14 +19,16 @@ export const test = base.extend<{createdArticleTitles: string[]}>({
             createdSlugs.push(slug);
             createdArticleTitles.push(title);
         }
-        await use(createdArticleTitles);
-
-        //cleanup created articles after test
-        await Promise.all(createdSlugs.map(slug => deleteArticleBySlug(request, slug)));
+        try{
+            await use(createdArticleTitles);
+        } finally {
+            //cleanup created articles after test
+            await Promise.all(createdSlugs.map(slug => deleteArticleBySlug(request, slug)));
+        }
     },
-    feedsPage: async ({createdArticleTitles, feedsPage}, use) =>{
+    pageManager: async ({createdArticleTitles, pageManager}, use) =>{
         void createdArticleTitles; // ensure articles are created before test starts        
         
-        await use(feedsPage);
+        await use(pageManager);
     }
 });

@@ -31,7 +31,15 @@ export async function createArticle(request: APIRequestContext, article: Article
 
 
 export async function deleteArticleBySlug(request: APIRequestContext, slug: string): Promise<void> {
-    const response = await request.delete(`/api/articles/${slug}`);
+    let response = await request.get(`/api/articles/${slug}`);
+    if (!response.ok()) {
+        const responseBody = await response.text();
+        const errorMessage = `The article with slug ${slug} does not exist: ${response.status()} ${response.statusText()} ${responseBody}`;
+        console.error(errorMessage);
+        return; // If the article doesn't exist, we can consider it "deleted" and exit gracefully
+    }
+
+    response = await request.delete(`/api/articles/${slug}`);
 
     if (!response.ok()) {
         const responseBody = await response.text();

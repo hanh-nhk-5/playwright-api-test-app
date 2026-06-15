@@ -1,9 +1,21 @@
 import {test} from '../../src/fixtures/feeds-favorite.fixture';
 import { expect } from '@playwright/test';
 
-test('User can favorite and remove the favorite from an article in the global feed and see its counter increase', async ({feedsPage, favoriteArticleTitle}) => {    
-    
-    const favoriteButton = await feedsPage.getFavoriteLocatorWithTitle(favoriteArticleTitle);
+test('User can favorite and remove the favorite from an article in the global feed and see its counter increase', async ({feedsPage, sampleArticleTitle, sampleTag}) => {    
+    await Promise.all([
+        feedsPage.page.waitForResponse(response =>
+            response.url().includes('/api/tags') &&
+            response.request().method() === 'GET' &&
+            response.ok()
+        ),
+        feedsPage.reloadGlobalFeedTab()
+    ]);
+
+    await expect.poll(async () => await feedsPage.getTagLocator(sampleTag).count()).toBeGreaterThan(0); // ensure the favorite tag is visible in the sidebar
+
+    await feedsPage.clickTag(sampleTag);//click on the favorite tag to filter articles by that tag and ensure the test article is visible in the feed
+
+    const favoriteButton = await feedsPage.getFavoriteLocatorWithTitle(sampleArticleTitle);
     await expect(favoriteButton).toHaveCount(1);
 
     const beforeFavorite = Number((await favoriteButton.textContent())?.trim() ?? '0');

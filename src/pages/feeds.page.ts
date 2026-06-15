@@ -2,6 +2,7 @@ import {Page, Locator} from '@playwright/test';
 import { ArticleDetailsPage } from './article-details.page';
 import { Article } from '../types/article';
 import { areArraysEqual } from '../utils/array.util';
+import { escapeRegExp } from '../utils/string.util';
 
 export class FeedsPage{
     readonly articlesPerPage = 10;
@@ -16,16 +17,31 @@ export class FeedsPage{
         this.articleCards = this.page.locator('app-article-preview');
     }
 
+    getTagLocator(tagName: string): Locator{
+        tagName = escapeRegExp(tagName);
+        return this.popularTagListLocator.locator('.tag-pill', {hasText: new RegExp(`^\\s*${tagName}\\s*$`, 'i')});
+    }
+
     async isGlobalFeedTabActive(): Promise<boolean>{
         const classAttribute = await this.globalFeedTabLocator.getAttribute('class');
         return classAttribute?.split(' ').includes('active') ?? false;
     }
 
-    async reloadGlobalFeedTag(){
+    async reloadGlobalFeedTab(){
         if(await this.isGlobalFeedTabActive())
             await this.page.reload(); // reload to ensure global feed is loaded and tags are displayed 
         else 
             await this.openGlobalFeed();
+    }
+
+    async waitForArticlesToLoad(){
+        // const loadingLocator = this.page.getByText('Loading articles...');
+
+        // if(await loadingLocator.isVisible().catch(() => false)){
+        //     await loadingLocator.waitFor({state: 'hidden'});
+        // }
+
+        await this.articleCards.first().waitFor({state: 'visible'});
     }
 
     async allArticlesHaveTag(tagName: string): Promise<boolean>{
@@ -41,8 +57,9 @@ export class FeedsPage{
     }
 
     async clickTag(tagName: string){
-        const tagLocator = this.popularTagListLocator.locator('a.tag-pill', {hasText: new RegExp(`^\\s*${tagName}\\s*$`)});
-        await tagLocator.click();
+        tagName = escapeRegExp(tagName);        
+        const tagLocator = this.popularTagListLocator.locator('a.tag-pill', {hasText: new RegExp(`^\\s*${tagName}\\s*$`, 'i')});
+        await tagLocator.first().click();
     }
 
     async getNumberOfPages(): Promise<number>{        
@@ -77,6 +94,33 @@ export class FeedsPage{
         return new ArticleDetailsPage(this.page);
     }
 
+    async viewArticleByIndex(index: number): Promise<ArticleDetailsPage>{
+        if(index < 0){
+            throw new Error(`Invalid article index: ${index}. Index must be a non-negative integer.`);
+        }
+        
+        const articleCount = await this.articleCards.count();
+        if(articleCount <= index){
+            throw new Error(`Article index out of bounds: ${index}. There are only ${articleCount} articles available.`);
+        }
+
+        const articleLinkLocator= this.page.locator('a.preview-link h1').nth(index);
+
+        const [response] = await Promise.all([
+            this.page.waitForResponse(response =>
+                response.url().includes('/api/articles') &&                
+                response.request().method() === 'GET' &&
+                response.ok()
+            ),
+            articleLinkLocator.click()
+        ]).catch(error => {
+            console.error(`Failed to view article at index "${index}": ${error}`);
+            throw error;
+        });       
+        
+        return new ArticleDetailsPage(this.page);
+    }
+
     extractTitleFromSlug(slug: string): string {
         const parts = slug.split('-');
         if (parts.length < 2) {
@@ -92,7 +136,7 @@ export class FeedsPage{
     } 
     
     async display(article: Article): Promise<boolean>{        
-        const articleCard = this.articleCards.filter({has: this.page.locator('a.preview-link h1', {hasText: new RegExp(`^\\s*${article.title}\\s*$`)})});
+        const articleCard = this.articleCards.filter({has: this.page.locator('a.preview-link h1', {hasText: new RegExp(`^\\s*${article.title}\\s*$`, 'i')})});
         if(await articleCard.count() === 0){
             console.warn(`Article with title "${article.title}" not found in the feed.`);
             return false;

@@ -1,17 +1,20 @@
 import {test} from '../../src/fixtures/feeds-paging.fixture';
 import { expect } from '@playwright/test';
 
-test('User can view the correct number of pages in the global feed', async ({feedsPage}) =>{
+test.describe.configure({mode: 'serial'});
+
+test('User can view the correct number of pages in the global feed', async ({pageManager}) =>{
+    
     const [apiResponse] = await Promise.all([
-        feedsPage.page.waitForResponse(response =>
+        pageManager.page.waitForResponse(response =>
             response.url().includes('/api/articles') &&                
             response.request().method() === 'GET' &&
             response.ok()
         ),
-        feedsPage.reloadGlobalFeedTag() 
-    ]);
-
+        pageManager.navigate().goToHomePage()
+    ]);    
     expect(apiResponse.ok()).toBeTruthy();
+    const feedsPage = pageManager.onFeedsPage();
 
     const responseData = await apiResponse.json();
     const totalArticles = responseData.articlesCount;
@@ -23,22 +26,24 @@ test('User can view the correct number of pages in the global feed', async ({fee
     }).toBe(expectedPages);
 });
 
-test('User can navigate to every page in the global feed', async ({feedsPage})=>{
+test('User can navigate to every page in the global feed', async ({pageManager})=>{    
     const [apiResponse] = await Promise.all([
-        feedsPage.page.waitForResponse(response =>
+        pageManager.page.waitForResponse(response =>
             response.url().includes('/api/articles') &&                
             response.request().method() === 'GET' &&
             response.ok()
         ),
-        feedsPage.reloadGlobalFeedTag()      
+        pageManager.navigate().goToHomePage() 
     ]);
 
+    const feedsPage = pageManager.onFeedsPage();
     expect(apiResponse.ok()).toBeTruthy();
-
+    await feedsPage.waitForArticlesToLoad();
+    
     const responseData = await apiResponse.json();
-    responseData.articles.forEach((article: {title: string}) => {
-        expect(feedsPage.isThereArticleWithTitle(article.title)).toBeTruthy();
-    })
+    for (const article of responseData.articles) {
+        expect(await feedsPage.isThereArticleWithTitle(article.title)).toBeTruthy();
+    }
 
     const numPages =await feedsPage.getNumberOfPages();
     for(let page=2; page<=numPages; page++){        
@@ -48,12 +53,15 @@ test('User can navigate to every page in the global feed', async ({feedsPage})=>
                 response.request().method() === 'GET' &&
                 response.ok()
             ),
-            feedsPage.clickPagination(page)
+            feedsPage.clickPagination(page)            
         ]);        
 
+        expect(apiResponse.ok()).toBeTruthy();
+        await feedsPage.waitForArticlesToLoad();
+
         const responseData = await apiResponse.json();
-        responseData.articles.forEach((article: {title: string}) => {
-            expect(feedsPage.isThereArticleWithTitle(article.title)).toBeTruthy();
-        });
+        for (const article of responseData.articles) {
+            expect(await feedsPage.isThereArticleWithTitle(article.title)).toBeTruthy();
+        }        
     }   
 })

@@ -1,30 +1,32 @@
-import { test as base} from './feeds.fixture';
-import { createArticle, deleteArticleBySlug } from '../apis/article.api';
-import { Article } from '../types/article';
+import { test as base} from './article-create-an-sample-article.fixture';
+import { FeedsPage } from '../pages/feeds.page';
 
+export const test = base.extend<{feedsPage: FeedsPage}>({
+    feedsPage: async ({sampleArticleTitle, sampleTag, pageManager}, use) => {
+        // force article setup to complete before opening the feeds page
+        void sampleArticleTitle;
 
-export const test = base.extend<{favoriteArticleTitle: string}>({
-    favoriteArticleTitle: async ({request}, use) => {
-        //create a new article to test favorite functionality
-        const article: Article = {
-            title: `Hanh for Favorites ${Date.now()}`,
-            description: 'Description for favorites test',
-            body: 'Body of the article for favorites test',
-            tags: ['favorites', 'test']
-        };
-        const slug = await createArticle(request, article);
+        //intercept the tag API call to ensure the favorite tag is included in the list of tags for the test favorite article
+        await pageManager.page.route('**/api/tags**', async route =>{
+            if (route.request().method() === 'GET') {
+                const response = await route.fetch();
+                const data = await response.json() as { tags?: string[] };
+                const tags = Array.isArray(data.tags) ? data.tags : [];
+                if(!tags.map(tag => tag.trim().toLowerCase()).includes(sampleTag.trim().toLowerCase())){
+                    tags.push(sampleTag);
+                }
+                await route.fulfill({body: JSON.stringify({...data, tags})});
+            }
+        });
+
         try {
-            await use(article.title);
+            //navigate to the Feeds page on the Global Feed tab
+            await pageManager.navigate().goToHomePage();
+            const feedsPage = pageManager.onFeedsPage();
+            await use(feedsPage);
         } finally {
-            await deleteArticleBySlug(request, slug); //delete the created article
+            await pageManager.page.unrouteAll({ behavior: 'ignoreErrors' });
         }
-    },
-
-    feedsPage: async ({feedsPage, favoriteArticleTitle}, use) => {
-        // force article setup to complete before opening global feed
-        void favoriteArticleTitle;
-
-        //navigate to the Feeds page on the Global Feed tab
-        await use (feedsPage);
+       
     }    
 });

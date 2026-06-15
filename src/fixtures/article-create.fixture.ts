@@ -5,6 +5,7 @@ import {Response} from '@playwright/test';
 
 export const test= base.extend<{ newArticlePage: ArticleEditorPage }>({
     newArticlePage: async ({pageManager, request}, use) =>{
+        await pageManager.navigate().goToHomePage();
         await pageManager.navigate().gotoNewArticlePage();
         const newArticlePage= pageManager.onNewArticlePage();   
         let slug: string | undefined;
@@ -28,19 +29,23 @@ export const test= base.extend<{ newArticlePage: ArticleEditorPage }>({
         newArticlePage.page.on('response', onResponse);
 
         //Step 1: create a new article using the article editor page and publish it
-        await use(newArticlePage); 
-        
-        //Waits briefly for network idle before removing listener to catch late responses.
-        await newArticlePage.page.waitForLoadState('networkidle', {timeout: 2000}).catch(() => undefined);
-         //remove the listener to prevent memory leaks and unintended side effects on other tests
-        newArticlePage.page.off('response', onResponse);
-        //wait for slug creation tasks to complete before proceeding with cleanup
-        await Promise.allSettled(slugCreateTasks);
+        try{
+            await use(newArticlePage); 
+        } finally {
+            //Waits briefly for network idle before removing listener to catch late responses.
+            await newArticlePage.page.waitForLoadState('networkidle', {timeout: 2000}).catch(() => undefined);
+            //remove the listener to prevent memory leaks and unintended side effects on other tests
+            newArticlePage.page.off('response', onResponse);
+            //wait for slug creation tasks to complete before proceeding with cleanup
+            await Promise.allSettled(slugCreateTasks);
 
-        //Step 2: cleanup - delete the article that was created for the test
-        if(slug) {
-            console.log(`Attempting to delete article with slug: ${slug}`);
-            await deleteArticleBySlug(request, slug);
+            //Step 2: cleanup - delete the article that was created for the test
+            if(slug) {
+                console.log(`Attempting to delete article with slug: ${slug}`);
+                await deleteArticleBySlug(request, slug);
+            }
         }
+        
+        
     }
 });
