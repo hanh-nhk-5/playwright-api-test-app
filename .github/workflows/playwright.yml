@@ -23,6 +23,10 @@ jobs:
         echo "MY_PASSWORD=${{ secrets.MY_PASSWORD }}" >> .env
         echo "AUTHENTICATION_FILE_PATH=${{ secrets.AUTHENTICATION_FILE_PATH }}" >> .env
         echo "API_BASE_URL=${{ secrets.API_BASE_URL }}" >> .env
+    - name: Create auth file
+      run: |
+        mkdir -p .auth
+        echo "${{ secrets.AUTH_USER_JSON }}" | base64 -d > .auth/user.json
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
