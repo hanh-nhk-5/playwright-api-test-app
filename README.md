@@ -19,3 +19,6 @@ To run the test
    - mornitor and validating API request/response
 7. Support cross-browsers testing with Chrome and Firefox
 8. Enable parallel test execution
+9. The .env and .auth/user.json files contain credentials required to execute the tests. For security reson, these files are excluded from Github. However, to ensure that tests can still run whenever code is pushed to Github:
+   - Define Github's Action secrets and variables to store the .env parameters and values, as well as the content of .auth/user.json encoded in base64
+   - Update the github workflows to recreate these files from the Github's Action secrets and variables before executing the tests.
